@@ -18,12 +18,12 @@ Supported Capacitor versions:
 
 Install the plugin via npm
 ```
-npm install --save @e-is/capacitor-bluetooth-serial
+npm install --save @badsaarow/capacitor-bluetooth-serial
 ```
 
 
 ```typescript
-import {BluetoothSerial} from "@e-is/capacitor-bluetooth-serial";
+import {BluetoothSerial} from "@badsaarow/capacitor-bluetooth-serial";
 
 //...do something with plugin
 

@@ -1,5 +1,5 @@
 {
-  "name": "@e-is/capacitor-bluetooth-serial",
+  "name": "@badsaarow/capacitor-bluetooth-serial",
   "version": "0.6.3",
   "description": "Capacitor Bluetooth Serial Plugin",
   "main": "dist/plugin.cjs.js",
@@ -30,7 +30,7 @@
     "prepublishOnly": "npm run build",
     "publish:cocoapod": "pod trunk push ./CapacitorBluetoothSerial.podspec --allow-warnings"
   },
-  "author": "Gerson Groth",
+  "author": "Sungyong",
   "license": "MIT",
   "devDependencies": {
     "@capacitor/android": "^4.8.1",
@@ -71,9 +71,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/e-is/capacitor-bluetooth-serial"
+    "url": "https://github.com/badsaarow/capacitor-bluetooth-serial"
   },
   "bugs": {
-    "url": "https://github.com/e-is/capacitor-bluetooth-serial/issues"
+    "url": "https://github.com/badsaarow/capacitor-bluetooth-serial/issues"
   }
 }
