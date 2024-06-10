@@ -1,4 +1,4 @@
-import {WebPlugin} from '@capacitor/core';
+import { WebPlugin, PluginListenerHandle } from '@capacitor/core';
 import {
   BluetoothConnectOptions,
   BluetoothConnectResult,
@@ -15,7 +15,6 @@ import {
 import {OptionsRequiredError} from './utils/errors';
 
 export class BluetoothSerialWeb extends WebPlugin implements BluetoothSerialPlugin {
-
   async isEnabled(): Promise<BluetoothState> {
     // not available on web
     return {enabled: true};
@@ -103,6 +102,21 @@ export class BluetoothSerialWeb extends WebPlugin implements BluetoothSerialPlug
       return Promise.reject(new OptionsRequiredError());
     }
     throw new Error('Method not implemented.');
+  }
+
+  addListener(eventName: string, listenerFunc: (...args: any[]) => any): Promise<PluginListenerHandle> & PluginListenerHandle {
+    const pluginListenerHandle = super.addListener(eventName, listenerFunc);
+  
+    // Create a new PluginListenerHandle that uses the remove method from the PluginListenerHandle returned by super.addListener
+    const newPluginListenerHandle: PluginListenerHandle = {
+      remove: async () => {
+        const resolvedPluginListenerHandle = await pluginListenerHandle;
+        await resolvedPluginListenerHandle.remove();
+      },
+    };
+  
+    // Return a Promise that resolves to the new PluginListenerHandle, and also has the properties of the new PluginListenerHandle
+    return Object.assign(Promise.resolve(newPluginListenerHandle), newPluginListenerHandle);
   }
 }
 

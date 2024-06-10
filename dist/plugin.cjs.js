@@ -1,7 +1,5 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
-
 var core = require('@capacitor/core');
 
 const BluetoothSerial$1 = core.registerPlugin('BluetoothSerial', {
@@ -88,13 +86,25 @@ class BluetoothSerialWeb extends core.WebPlugin {
         }
         throw new Error('Method not implemented.');
     }
+    addListener(eventName, listenerFunc) {
+        const pluginListenerHandle = super.addListener(eventName, listenerFunc);
+        // Create a new PluginListenerHandle that uses the remove method from the PluginListenerHandle returned by super.addListener
+        const newPluginListenerHandle = {
+            remove: async () => {
+                const resolvedPluginListenerHandle = await pluginListenerHandle;
+                await resolvedPluginListenerHandle.remove();
+            },
+        };
+        // Return a Promise that resolves to the new PluginListenerHandle, and also has the properties of the new PluginListenerHandle
+        return Object.assign(Promise.resolve(newPluginListenerHandle), newPluginListenerHandle);
+    }
 }
 const BluetoothSerial = new BluetoothSerialWeb();
 
 var web = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    BluetoothSerialWeb: BluetoothSerialWeb,
-    BluetoothSerial: BluetoothSerial
+    BluetoothSerial: BluetoothSerial,
+    BluetoothSerialWeb: BluetoothSerialWeb
 });
 
 exports.BluetoothSerial = BluetoothSerial$1;

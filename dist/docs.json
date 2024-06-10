@@ -280,7 +280,7 @@
           "PluginListenerHandle",
           "BluetoothReadResult"
         ],
-        "slug": "addlisteneronread"
+        "slug": "addlisteneronread-"
       },
       {
         "name": "addListener",
@@ -309,7 +309,7 @@
           "PluginListenerHandle",
           "BluetoothState"
         ],
-        "slug": "addlisteneronenabledchanged"
+        "slug": "addlisteneronenabledchanged-"
       },
       {
         "name": "removeAllListeners",

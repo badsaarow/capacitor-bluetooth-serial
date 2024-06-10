@@ -74,6 +74,18 @@ export class BluetoothSerialWeb extends WebPlugin {
         }
         throw new Error('Method not implemented.');
     }
+    addListener(eventName, listenerFunc) {
+        const pluginListenerHandle = super.addListener(eventName, listenerFunc);
+        // Create a new PluginListenerHandle that uses the remove method from the PluginListenerHandle returned by super.addListener
+        const newPluginListenerHandle = {
+            remove: async () => {
+                const resolvedPluginListenerHandle = await pluginListenerHandle;
+                await resolvedPluginListenerHandle.remove();
+            },
+        };
+        // Return a Promise that resolves to the new PluginListenerHandle, and also has the properties of the new PluginListenerHandle
+        return Object.assign(Promise.resolve(newPluginListenerHandle), newPluginListenerHandle);
+    }
 }
 const BluetoothSerial = new BluetoothSerialWeb();
 export { BluetoothSerial };
