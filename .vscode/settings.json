@@ -1,12 +1,19 @@
 {
     "cSpell.words": [
         "badsaarow",
+        "bluetoothserial",
         "cocoapod",
         "docgen",
+        "fqcn",
         "Gerson",
         "gradlew",
         "Groth",
+        "keepattributes",
+        "keepclassmembers",
         "podspec",
+        "proguard",
+        "renamesourcefileattribute",
+        "rssi",
         "swiftlint",
         "xcodebuild",
         "xcworkspace"

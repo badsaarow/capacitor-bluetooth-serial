@@ -36,7 +36,6 @@ public class BluetoothSerialService {
         connect(device, true, serial);
     }
 
-    // TODO
     public void connectInsecure(BluetoothDevice device, BluetoothSerialPlugin serial) {
         connect(device, false, serial);
     }
@@ -129,7 +128,6 @@ public class BluetoothSerialService {
     public String read(String address) throws IOException {
         BluetoothConnection connection = getConnection(address);
 
-        // TODO - criar exception customizada
         if(connection == null) {
             Log.e(TAG, "No connection found");
             throw new IOException("No connection found");
@@ -214,7 +212,6 @@ public class BluetoothSerialService {
         }
     }
 
-    //TODO - nao esta funcionando corretamente
     public void reconnect(String address) {
         BluetoothConnection oldConnection = connections.get(address);
         BluetoothConnection newConnection = new BluetoothConnection(oldConnection);
@@ -304,7 +301,8 @@ public class BluetoothSerialService {
                         // Read from the InputStream
                         int length = socketInputStream.read(bytesBuffer);
                         String data = new String(bytesBuffer, 0, length);
-                        appendToBuffer(data);
+                        // Log.d(TAG, data);
+                        updateBuffer(data);
                     } catch (IOException e) {
                         Log.e(TAG, "disconnected", e);
                         disconnect();
@@ -315,16 +313,13 @@ public class BluetoothSerialService {
             Log.i(TAG, "END connectedThread");
         }
 
-        private void appendToBuffer(String data) {
+        private void updateBuffer(String data) {
             synchronized (this.readBuffer) {
-                this.readBuffer.append(data);
+                //this.readBuffer.append(data);
             }
             if (this.enabledNotifications) {
-                while (this.readBuffer.indexOf(this.notificationDelimiter) >= 0) {
-                    String value = readUntil(this.notificationDelimiter);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        notificationCallback.accept(value);
-                    }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    notificationCallback.accept(data);
                 }
             }
         }
@@ -376,13 +371,6 @@ public class BluetoothSerialService {
                 socketOutputStream.write(buffer);
             } catch (IOException e) {
                 Log.e(TAG, "Exception during write", e);
-                /*reconnect();
-                try {
-                    outStream.write(buffer);
-                } catch (IOException ex) {
-                    Log.e(TAG, "Exception during write again. Closing...", e);
-                    // TODO - encerrar thread
-                }*/
             }
         }
 

@@ -10,9 +10,6 @@ Supported platforms
 - [x] Android
 - [ ] iOS
 
-Supported Capacitor versions:
-- Capacitor <= 3: Please use [capacitor-bluetooth-serial](https://github.com/agro1desenvolvimento/capacitor-bluetooth-serial) (<= v0.0.3)
-- Capacitor 4 (v0.4.x)
 
 ## Usage
 
@@ -47,8 +44,6 @@ Interface and type definitions can be found [here](./src/definitions.ts).
 - [BluetoothSerial.connectInsecure](#connectInsecure)
 - [BluetoothSerial.disconnect](#disconnect)
 - [BluetoothSerial.isConnected](#isConnected)
-- [BluetoothSerial.read](#read)
-- [BluetoothSerial.readUntil](#readUntil)
 - [BluetoothSerial.startNotifications](#startNotifications)
 - [BluetoothSerial.stopNotifications](#stopNotifications)
 - [BluetoothSerial.write](#write)
@@ -398,66 +393,6 @@ BluetoothSerial
   })
   .catch(() => {
     console.log('Error checking connection status');
-  });
-```
-
-## read
-
-Reads data from the buffer.
-
-  `read(options: BluetoothReadOptions): Promise<BluetoothReadResult>`;
-
-### Description
-
-Function `read` reads the data from the buffer. The data is passed to the success callback as a String.  Calling `read` when no data is available will pass an empty String to the callback.
-
-### Parameters
-
-- { __address__ }: Identifier of the remote device.
-
-### Quick Example
-
-```typescript
-BluetoothSerial
-  .read({
-    address: '00:11:22:33:44:55',
-  })
-  .then((result: BluetoothReadResult) => {
-    console.log(result.data);
-  })
-  .catch(() => {
-    console.log('Error reading data from device');
-  });
-```
-
-## readUntil
-
-Reads data from the buffer until it reaches a delimiter.
-
-  `readUntil(options: BluetoothReadUntilOptions): Promise<BluetoothReadResult>`;
-
-### Description
-
-Function `readUntil` reads the data from the buffer until it reaches a delimiter.  The data is passed to the success callback as a String.  If the buffer does not contain the delimiter, an empty String is passed to the callback.
-
-### Parameters
-
-- { __address__ }: Identifier of the remote device.
-- { __delimiter__ }: Delimiter.
-
-### Quick Example
-
-```typescript
-BluetoothSerial
-  .readUntil({
-    address: '00:11:22:33:44:55',
-    delimiter: '\n',
-  })
-  .then((result: BluetoothReadResult) => {
-    console.log(result.data);
-  })
-  .catch(() => {
-    console.log('Error reading data from device');
   });
 ```
 
