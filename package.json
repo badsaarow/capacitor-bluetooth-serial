@@ -15,9 +15,9 @@
     "CapacitorBluetoothSerial.podspec"
   ],
   "scripts": {
-    "verify": "npm run verify:android:win && npm run verify:web",
+    "verify": "npm run verify:android && npm run verify:web",
     "verify:ios": "cd ios && pod install && xcodebuild -workspace Plugin.xcworkspace -scheme Plugin -destination generic/platform=iOS && cd ..",
-    "verify:android": "cd android && ./gradlew clean build test && cd ..",
+    "verify:android": "cd android && ./gradlew clean build test --stacktrace && cd ..",
     "verify:android:win": "cd android && ./gradlew.bat clean build test && cd ..",
     "verify:web": "npm run build",
     "lint": "npm run eslint && npm run prettier -- --check",

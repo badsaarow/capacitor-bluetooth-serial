@@ -17,5 +17,6 @@
         "swiftlint",
         "xcodebuild",
         "xcworkspace"
-    ]
+    ],
+    "java.configuration.updateBuildConfiguration": "interactive"
 }
