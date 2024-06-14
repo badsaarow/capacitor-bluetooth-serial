@@ -4,17 +4,14 @@ export interface BluetoothSerialPlugin {
     enable(): Promise<BluetoothState>;
     /**
      * Disable bluetooth (turn bluetooth off)
-     * @since 0.0.5
      */
     disable(): Promise<BluetoothState>;
     /**
      * Start to listen bluetooth state changes (will emit a 'onEnabledChanged' event when state changed)
-     * @since 0.0.5
      */
     startEnabledNotifications(): Promise<void>;
     /**
      * Stop to listen bluetooth state changes
-     * @since 0.0.5
      */
     stopEnabledNotifications(): Promise<void>;
     scan(): Promise<BluetoothScanResult>;
@@ -29,18 +26,12 @@ export interface BluetoothSerialPlugin {
     stopNotifications(options: BluetoothStopNotificationsOptions): Promise<void>;
     /**
      * Listen for device input value
-     * @since 0.0.5
      */
     addListener(eventName: 'onRead', listenerFunc: (result: BluetoothReadResult) => void): Promise<PluginListenerHandle> & PluginListenerHandle;
     /**
      * Listen for bluetooth state changed
-     * @since 0.0.5
      */
     addListener(eventName: 'onEnabledChanged', listenerFunc: (result: BluetoothState) => void): Promise<PluginListenerHandle> & PluginListenerHandle;
-    /**
-    *
-    * @since 0.0.5
-    */
     removeAllListeners(): Promise<void>;
 }
 export interface BluetoothState {

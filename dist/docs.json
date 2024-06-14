@@ -34,12 +34,7 @@
         "signature": "() => Promise<BluetoothState>",
         "parameters": [],
         "returns": "Promise<BluetoothState>",
-        "tags": [
-          {
-            "name": "since",
-            "text": "0.0.5"
-          }
-        ],
+        "tags": [],
         "docs": "Disable bluetooth (turn bluetooth off)",
         "complexTypes": [
           "BluetoothState"
@@ -51,12 +46,7 @@
         "signature": "() => Promise<void>",
         "parameters": [],
         "returns": "Promise<void>",
-        "tags": [
-          {
-            "name": "since",
-            "text": "0.0.5"
-          }
-        ],
+        "tags": [],
         "docs": "Start to listen bluetooth state changes (will emit a 'onEnabledChanged' event when state changed)",
         "complexTypes": [],
         "slug": "startenablednotifications"
@@ -66,12 +56,7 @@
         "signature": "() => Promise<void>",
         "parameters": [],
         "returns": "Promise<void>",
-        "tags": [
-          {
-            "name": "since",
-            "text": "0.0.5"
-          }
-        ],
+        "tags": [],
         "docs": "Stop to listen bluetooth state changes",
         "complexTypes": [],
         "slug": "stopenablednotifications"
@@ -269,12 +254,7 @@
           }
         ],
         "returns": "Promise<PluginListenerHandle> & PluginListenerHandle",
-        "tags": [
-          {
-            "name": "since",
-            "text": "0.0.5"
-          }
-        ],
+        "tags": [],
         "docs": "Listen for device input value",
         "complexTypes": [
           "PluginListenerHandle",
@@ -298,12 +278,7 @@
           }
         ],
         "returns": "Promise<PluginListenerHandle> & PluginListenerHandle",
-        "tags": [
-          {
-            "name": "since",
-            "text": "0.0.5"
-          }
-        ],
+        "tags": [],
         "docs": "Listen for bluetooth state changed",
         "complexTypes": [
           "PluginListenerHandle",
@@ -316,12 +291,7 @@
         "signature": "() => Promise<void>",
         "parameters": [],
         "returns": "Promise<void>",
-        "tags": [
-          {
-            "name": "since",
-            "text": "0.0.5"
-          }
-        ],
+        "tags": [],
         "docs": "",
         "complexTypes": [],
         "slug": "removealllisteners"

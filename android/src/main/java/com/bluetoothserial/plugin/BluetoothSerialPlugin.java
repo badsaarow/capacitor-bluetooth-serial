@@ -1,6 +1,8 @@
 package com.bluetoothserial.plugin;
 
 import android.Manifest;
+import androidx.core.content.ContextCompat;
+import androidx.core.app.ActivityCompat;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -175,6 +177,15 @@ public class BluetoothSerialPlugin extends Plugin {
 
     try {
       final Context context = getContext();
+      // Check for BLUETOOTH_SCAN permission on Android 12 and above
+      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+          ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT}, 1);
+          // Inform the user that permission is needed
+          Log.d(getLogTag(), "Requesting Bluetooth permissions");
+          return;
+        }
+      }
 
       BroadcastReceiver receiver = new BroadcastReceiver() {
         private Set<BluetoothDevice> devices = new HashSet<>();
