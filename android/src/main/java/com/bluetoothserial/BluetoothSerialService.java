@@ -6,9 +6,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.os.Build;
 import android.util.Log;
-
 import com.bluetoothserial.plugin.BluetoothSerialPlugin;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -20,6 +18,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 public class BluetoothSerialService {
+
     private static final UUID DEFAULT_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private static final String TAG = "BluetoothSerialService";
 
@@ -49,7 +48,7 @@ public class BluetoothSerialService {
 
     public boolean disconnectAllDevices() {
         boolean success = true;
-        for(String address : connections.keySet()) {
+        for (String address : connections.keySet()) {
             success = success & disconnect(address);
         }
 
@@ -66,19 +65,19 @@ public class BluetoothSerialService {
 
         BluetoothConnection socket = getConnection(address);
 
-        if(socket == null) {
+        if (socket == null) {
             Log.e(TAG, "No connection found");
             return true;
         }
 
-        if(!socket.isConnected()) {
+        if (!socket.isConnected()) {
             Log.i(TAG, "Device is already disconnected");
         } else {
             return socket.disconnect();
         }
 
         BluetoothConnection connection = connections.get(address);
-        if(connection != null) {
+        if (connection != null) {
             connection.interrupt();
         }
 
@@ -93,7 +92,7 @@ public class BluetoothSerialService {
 
         BluetoothConnection socket = getConnection(address);
 
-        if(socket == null) {
+        if (socket == null) {
             Log.e(TAG, "No connection found");
             return false;
         }
@@ -117,7 +116,7 @@ public class BluetoothSerialService {
             r = getConnection(address);
         }
 
-        if(r == null || !r.isConnected()) {
+        if (r == null || !r.isConnected()) {
             Log.e(TAG, "Write failed - No connection or not connected");
             return false;
         }
@@ -132,12 +131,12 @@ public class BluetoothSerialService {
     public String read(String address) throws IOException {
         BluetoothConnection connection = getConnection(address);
 
-        if(connection == null) {
+        if (connection == null) {
             Log.e(TAG, "No connection found");
             throw new IOException("No connection found");
         }
 
-        if(!connection.isConnected()) {
+        if (!connection.isConnected()) {
             Log.e(TAG, "Not connected");
 
             throw new IOException("Not connected");
@@ -149,12 +148,12 @@ public class BluetoothSerialService {
     public String readUntil(String address, String delimiter) throws IOException {
         BluetoothConnection connection = getConnection(address);
 
-        if(connection == null) {
+        if (connection == null) {
             Log.e(TAG, "No connection found");
             throw new IOException("No connection found");
         }
 
-        if(!connection.isConnected()) {
+        if (!connection.isConnected()) {
             Log.e(TAG, "Not connected");
 
             throw new IOException("Not connected");
@@ -182,12 +181,12 @@ public class BluetoothSerialService {
     public void stopNotifications(String address) throws IOException {
         BluetoothConnection connection = getConnection(address);
 
-        if(connection == null) {
+        if (connection == null) {
             Log.e(TAG, "No connection found");
             throw new IOException("No connection found");
         }
 
-        if(!connection.isConnected()) {
+        if (!connection.isConnected()) {
             Log.e(TAG, "Not connected");
 
             throw new IOException("Not connected");
@@ -211,7 +210,7 @@ public class BluetoothSerialService {
     public void reconnectAll() {
         List<String> addresses = new ArrayList<>(connections.keySet());
 
-        for(String address : addresses) {
+        for (String address : addresses) {
             reconnect(address);
         }
     }
@@ -227,10 +226,11 @@ public class BluetoothSerialService {
     private enum ConnectionStatus {
         NOT_CONNECTED,
         CONNECTING,
-        CONNECTED;
+        CONNECTED
     }
 
     private class BluetoothConnection extends Thread {
+
         private final BluetoothDevice device;
         private final boolean secure;
         private final BluetoothSerialPlugin plugin;
@@ -272,7 +272,7 @@ public class BluetoothSerialService {
             Log.d(TAG, "BEGIN create socket SocketType:" + socketType + " for device " + device.getAddress());
             status = ConnectionStatus.CONNECTING;
             try {
-                if(secure) {
+                if (secure) {
                     socket = device.createRfcommSocketToServiceRecord(DEFAULT_UUID);
                 } else {
                     socket = device.createInsecureRfcommSocketToServiceRecord(DEFAULT_UUID);
@@ -289,14 +289,14 @@ public class BluetoothSerialService {
                 // Get streams immediately after successful connection
                 socketInputStream = socket.getInputStream();
                 socketOutputStream = socket.getOutputStream();
-                
+
                 if (socketInputStream == null || socketOutputStream == null) {
                     throw new IOException("Failed to get socket streams");
                 }
 
                 // Set socket timeout to prevent blocking forever
-//                socket.setSoTimeout(1000);
-                
+                //                socket.setSoTimeout(1000);
+
                 Log.d(TAG, "Successfully obtained input/output streams");
                 connected();
             } catch (IOException e) {
@@ -327,19 +327,19 @@ public class BluetoothSerialService {
                             Log.e(TAG, "InputStream is null for device " + device.getAddress());
                             break;
                         }
-                        
+
                         // Check available bytes
                         int available = socketInputStream.available();
                         if (available > 0) {
                             retryCount = 0; // Reset retry count on successful read
                             Log.d(TAG, available + " bytes available to read from " + device.getAddress());
-                            
+
                             int length = socketInputStream.read(bytesBuffer, 0, Math.min(available, bytesBuffer.length));
                             if (length == -1) {
                                 Log.e(TAG, "End of stream reached for device " + device.getAddress());
                                 break;
                             }
-                            
+
                             if (length > 0) {
                                 String data = new String(bytesBuffer, 0, length);
                                 Log.d(TAG, "Received " + length + " bytes from " + device.getAddress());
@@ -358,10 +358,9 @@ public class BluetoothSerialService {
                                 retryCount = 0; // Reset retry count if socket is still connected
                             }
                         }
-                        
+
                         // Small sleep to prevent CPU thrashing
                         Thread.sleep(50); // Increased sleep time when no data
-                        
                     } catch (IOException e) {
                         if (e.getMessage() != null && e.getMessage().contains("socket closed")) {
                             Log.d(TAG, "Socket closed normally for device " + device.getAddress());
@@ -411,7 +410,7 @@ public class BluetoothSerialService {
                 Log.d(TAG, "New buffer size: " + readBuffer.length());
                 Log.d(TAG, "Buffer content: " + readBuffer.toString());
             }
-            
+
             if (this.enabledNotifications && this.notificationCallback != null) {
                 Log.d(TAG, "Sending notification for " + device.getAddress());
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -448,7 +447,7 @@ public class BluetoothSerialService {
                 if (index >= 0) {
                     index += delimiter.length();
                     data = readBuffer.substring(0, index);
-                    readBuffer.delete(0, index+1);
+                    readBuffer.delete(0, index + 1);
                 }
             }
 
@@ -509,7 +508,6 @@ public class BluetoothSerialService {
             createRfcomm(device, secure);
             socketInputStream = getInputStream(socket);
             socketOutputStream = getOutputStream(socket);
-
         }
 
         private void connected() {
