@@ -1,6 +1,8 @@
 package com.bluetoothserial.plugin;
 
 import android.Manifest;
+import androidx.core.content.ContextCompat;
+import androidx.core.app.ActivityCompat;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -175,6 +177,15 @@ public class BluetoothSerialPlugin extends Plugin {
 
     try {
       final Context context = getContext();
+      // Check for BLUETOOTH_SCAN permission on Android 12 and above
+      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+          ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT}, 1);
+          // Inform the user that permission is needed
+          Log.d(getLogTag(), "Requesting Bluetooth permissions");
+          return;
+        }
+      }
 
       BroadcastReceiver receiver = new BroadcastReceiver() {
         private Set<BluetoothDevice> devices = new HashSet<>();
@@ -222,31 +233,31 @@ public class BluetoothSerialPlugin extends Plugin {
     String address = getAddress(call);
 
     if (address == null) {
+      Log.e(getLogTag(), "Connect failed: " + ERROR_ADDRESS_MISSING);
       call.reject(ERROR_ADDRESS_MISSING);
       return;
     }
 
     if (rejectIfDisabled(call)) {
+      Log.e(getLogTag(), "Connect failed: Bluetooth is disabled");
       return;
     }
 
     BluetoothDevice device = bluetoothAdapter.getRemoteDevice(address);
     if (device == null) {
+      Log.e(getLogTag(), "Connect failed: Device not found - " + address);
       call.reject(ERROR_DEVICE_NOT_FOUND);
       return;
     }
 
-        /* TODO - autoConnect
-        Boolean autoConnect = call.getBoolean(keyAutoConnect);
-        autoConnect = autoConnect == null ? false : autoConnect;
-         */
-
+    Log.d(getLogTag(), "Attempting to connect to device: " + address);
     connectCall = call;
     getService().connect(device, this);
   }
 
   public void connected() {
     if (connectCall != null) {
+      Log.i(getLogTag(), "Successfully connected to device");
       connectCall.resolve();
       connectCall = null;
     }
@@ -254,6 +265,7 @@ public class BluetoothSerialPlugin extends Plugin {
 
   public void connectionFailed() {
     if (connectCall != null) {
+      Log.e(getLogTag(), "Connection failed: " + ERROR_CONNECTION_FAILED);
       connectCall.reject(ERROR_CONNECTION_FAILED);
       connectCall = null;
     }
@@ -297,18 +309,21 @@ public class BluetoothSerialPlugin extends Plugin {
     String address = getAddress(call);
 
     if (address == null) {
+      Log.e(getLogTag(), "Write failed: " + ERROR_ADDRESS_MISSING);
       call.reject(ERROR_ADDRESS_MISSING);
       return;
     }
 
     String value = call.getString(KeyConstants.VALUE);
-    Log.i(getLogTag(), value);
+    Log.d(getLogTag(), "Writing to device " + address + ": " + value);
 
     boolean success = getService().write(address, BluetoothDeviceHelper.toByteArray(value));
 
     if (success) {
+      Log.d(getLogTag(), "Successfully wrote to device: " + address);
       call.resolve();
     } else {
+      Log.e(getLogTag(), "Write failed: " + ERROR_WRITING);
       call.reject(ERROR_WRITING);
     }
   }
@@ -318,19 +333,24 @@ public class BluetoothSerialPlugin extends Plugin {
     String address = getAddress(call);
 
     if (address == null) {
+      Log.e(getLogTag(), "Read failed: " + ERROR_ADDRESS_MISSING);
       call.reject(ERROR_ADDRESS_MISSING);
       return;
     }
 
     try {
+      Log.d(getLogTag(), "Attempting to read from device: " + address);
       String value = getService().read(address);
+      Log.d(getLogTag(), "Read value from " + address + ": " + value);
+      if (value != null && value.length() > 0) {
+        Log.d(getLogTag(), "Read hex value: " + bytesToHex(value.getBytes()));
+      }
 
       JSObject response = new JSObject();
       response.put(KeyConstants.VALUE, value);
-
       call.resolve(response);
     } catch (IOException e) {
-      Log.e(getLogTag(), "Exception during read", e);
+      Log.e(getLogTag(), "Exception during read from " + address, e);
       call.reject("Exception during read", e);
     }
   }
@@ -574,6 +594,14 @@ public class BluetoothSerialPlugin extends Plugin {
 
     private PermissionState getPermissionState() {
         return getPermissionState(getPermissionAlias());
+    }
+
+    private static String bytesToHex(byte[] bytes) {
+        StringBuilder result = new StringBuilder();
+        for (byte b : bytes) {
+            result.append(String.format("%02X ", b));
+        }
+        return result.toString();
     }
 
 }

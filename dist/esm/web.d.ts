@@ -1,22 +1,24 @@
-import { WebPlugin, PluginListenerHandle } from '@capacitor/core';
-import { BluetoothConnectOptions, BluetoothConnectResult, BluetoothStopNotificationsOptions, BluetoothStartNotificationsOptions, BluetoothReadOptions, BluetoothReadResult, BluetoothReadUntilOptions, BluetoothScanResult, BluetoothSerialPlugin, BluetoothState, BluetoothWriteOptions } from './definitions';
+import { WebPlugin } from '@capacitor/core';
+import type { BluetoothSerialPlugin } from './definitions';
 export declare class BluetoothSerialWeb extends WebPlugin implements BluetoothSerialPlugin {
-    isEnabled(): Promise<BluetoothState>;
-    enable(): Promise<BluetoothState>;
-    disable(): Promise<BluetoothState>;
-    startEnabledNotifications(): Promise<void>;
-    stopEnabledNotifications(): Promise<void>;
-    scan(): Promise<BluetoothScanResult>;
-    connect(options: BluetoothConnectOptions): Promise<void>;
-    connectInsecure(options: BluetoothConnectOptions): Promise<void>;
-    disconnect(options: BluetoothConnectOptions): Promise<void>;
-    isConnected(options: BluetoothConnectOptions): Promise<BluetoothConnectResult>;
-    read(options: BluetoothReadOptions): Promise<BluetoothReadResult>;
-    readUntil(options: BluetoothReadUntilOptions): Promise<BluetoothReadResult>;
-    write(options: BluetoothWriteOptions): Promise<void>;
-    startNotifications(options: BluetoothStartNotificationsOptions): Promise<void>;
-    stopNotifications(options: BluetoothStopNotificationsOptions): Promise<void>;
-    addListener(eventName: string, listenerFunc: (...args: any[]) => any): Promise<PluginListenerHandle> & PluginListenerHandle;
+    connect(options: {
+        address: string;
+    }): Promise<void>;
+    disconnect(): Promise<void>;
+    write(options: {
+        data: string;
+    }): Promise<void>;
+    read(): Promise<{
+        data: string;
+    }>;
+    isEnabled(): Promise<{
+        enabled: boolean;
+    }>;
+    enable(): Promise<void>;
+    scan(): Promise<{
+        devices: {
+            name: string;
+            address: string;
+        }[];
+    }>;
 }
-declare const BluetoothSerial: BluetoothSerialWeb;
-export { BluetoothSerial };

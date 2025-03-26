@@ -4,4 +4,3 @@ const BluetoothSerial = registerPlugin('BluetoothSerial', {
 });
 export * from './definitions';
 export { BluetoothSerial };
-//# sourceMappingURL=index.js.map
